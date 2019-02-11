@@ -3,6 +3,43 @@ var button = document.querySelector('#start-button');
 var output = document.querySelector('#output');
 
 button.addEventListener('click', function() {
+    promise = new Promise(function(){
+      setTimeout(function(){
+        resolve("https://swapi.co/api/people/1")
+      },3000)
+    }).then(function(urlToResolve){
+      return fetch(urlToResolve).then(function(data){
+        return(data.json())
+      }).then(function(jsonData){
+        output.textContent=jsondata.name;
+      })
+    })
+
+
+
+    /*PUT */
+
+    promise = new Promise(function(){
+      setTimeout(function(){
+        resolve(" https://httpbin.org/put")
+      },3000)
+    }).then(function(urlToResolve){
+      return fetch(urlToResolve,{
+        method:'PUT',
+        headers:{
+          "Content-Type":"application/json",
+          "accept": "application/json"
+        },
+        body:{
+          person: {name: 'Max', age: 28}
+        }
+      })
+      .then(function(data){
+        return(data.json())
+      }).then(function(jsonData){
+        output.textContent=jsonData.json.person.name;
+      })
+    })
   // Create a new Promise here and use setTimeout inside the function you pass to the constructor
 
   setTimeout(function() { // <- Store this INSIDE the Promise you created!
