@@ -30,6 +30,22 @@ shareImageButton.addEventListener('click', openCreatePostModal);
 
 closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 
+// Currently not in use, allows to save assets in cache on demand otherwise
+function onSaveButtonClicked(event) {
+  console.log('clicked');
+  if ('caches' in window) {
+    caches.open('user-requested')
+      .then(function(cache) {
+        cache.add('https://httpbin.org/get');
+        cache.add('/src/images/sf-boat.jpg');
+      });
+  }
+}
+function clearCards(){
+  while(sharedMomentsArea.hasChildNodes()){
+    sharedMomentsArea.removeChild(sharedMomentsArea.lastChild)
+  }
+}
 function createCard() {
   var cardWrapper = document.createElement('div');
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
@@ -40,23 +56,64 @@ function createCard() {
   cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
-  cardTitleTextElement.className = 'mdl-card__title-text';
   cardTitleTextElement.style.color = 'white';
+  cardTitleTextElement.className = 'mdl-card__title-text';
   cardTitleTextElement.textContent = 'San Francisco Trip';
   cardTitle.appendChild(cardTitleTextElement);
   var cardSupportingText = document.createElement('div');
   cardSupportingText.className = 'mdl-card__supporting-text';
   cardSupportingText.textContent = 'In San Francisco';
   cardSupportingText.style.textAlign = 'center';
+  // var cardSaveButton = document.createElement('button');
+  // cardSaveButton.textContent = 'Save';
+  // cardSaveButton.addEventListener('click', onSaveButtonClicked);
+  // cardSupportingText.appendChild(cardSaveButton);
   cardWrapper.appendChild(cardSupportingText);
   componentHandler.upgradeElement(cardWrapper);
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
-fetch('https://httpbin.org/get')
+/*fetch('https://httpbin.org/get')
   .then(function(res) {
     return res.json();
   })
   .then(function(data) {
     createCard();
-  });
+  });*/
+
+
+  //cache then network
+  url='https://httpbin.org/get';
+  var networkReceived=false;
+    fetch(url)
+    .then(function(result){
+      console.log("This is from feed.js web")
+      return result;
+    })
+    .then(function(data) {
+      networkReceived=true;
+      clearCards();
+      createCard();
+      return data.json();
+
+    })
+
+
+      if('caches' in window){
+          caches.match(url)
+          .then(function(result){
+            if(result){
+              console.log("This is from feed.js cache")
+              return result;
+            }
+          })
+          .then(function(data){
+            if(!networkReceived){
+              console.log("From cache" ,data.json());
+              clearCards();
+              createCard();
+            }
+
+          })
+      }
+    
