@@ -53,7 +53,11 @@ function animate() {
   }, 13500);
 }
 
+
+
 animate();
+
+
 
 button.addEventListener('click', function() {
   animate();
