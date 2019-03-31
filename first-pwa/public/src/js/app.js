@@ -19,10 +19,15 @@ function animate() {
     courseFeatureElements[0].classList.add('animate-in');
   }, 3000);
 
+    
+    
+    
   setTimeout(function () {
     courseFeatureElements[1].classList.add('animate-in');
   }, 4500);
 
+    
+    
   setTimeout(function () {
     courseFeatureElements[2].classList.add('animate-in');
   }, 6000);
